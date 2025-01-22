@@ -21,7 +21,7 @@ num_notes_higher = 13
 first_note = 0
 last_note = num_notes_lower + num_notes_higher - 1
 
-time_between_notes = 0.5
+time_between_notes = 0.25
 zero_note = 30
 
 samples_between_notes = time_between_notes * sample_rate
@@ -31,7 +31,17 @@ for note_int in range(-1*num_notes_lower, num_notes_higher):
     scaled_note= librosa.effects.pitch_shift(y=note, sr=sample_rate, bins_per_octave=12, n_steps=note_int, scale=True)
     notes[note_int + num_notes_lower] = scaled_note
 
-song_array = [[0, 2, 4, 5, 7, 9, 11, 12], [2, 4, 5, 7, 9, 11, 12, 14], [4, 5, 7, 9, 11, 12, 14, 16]]  # do re mi, plus an empty song
+# song_array = [[0, 2, 4, 5, 7, 9, 11, 12], [2, 4, 5, 7, 9, 11, 12, 14], [4, 5, 7, 9, 11, 12, 14, 16]]  # do re mi, plus friends
+song_array = [[0, 0, 5, 5, 7, 9, 5, 400,  #Tis a gift to be simple
+               9, 10, 12, 12, 10, 9, 400, # Tis a gift to be free
+               7, 5, 7, 7, 7, 5, 7, 9, 7, 4, 0, 400, # tis a gift to come down where we ought to be
+               0, 5, 4, 5, 7, 9, 7, 7, 9, 10, 12, 400, # and when we find ourselves in the place just right
+               9, 7, 7, 7, 9, 9, 7, 5, 5, 5, 5, 400, 400, # t'will be in the valley of love and delight
+               12, 9, 7, 9, 10, 9, 7, 5, 400, # when true simplicity is gained
+               7, 9, 9, 10, 12, 9, 7, 7, 9, 7, 400, #to bow and to bend we shan't be ashamed
+               0, 5, 5, 7, 9, 9, 10, 12, 400, # to turn, turn, will be our delight
+               10, 9, 7, 7, 9, 9, 7, 5, 5, 5] # till by turning, turning we come out right
+               ]
 #song_array = [[0, 12, 400, 400, 7, 7]] # rest for undefined notes
 sound_signal = notes[0][0:1]
 for score in song_array:
