@@ -3,12 +3,15 @@ import soundfile
 import numpy as np
 
 def add_new_note(song, note, sample_idx):
-    if sample_idx + len(note) > len(song):
+    if sample_idx > len(song): # Add a note after the end of the song.  Pad the extra space with zeros.
+        song = np.concat( (song,  np.zeros(sample_idx  - len(song)), note ))
+        return song
+    elif sample_idx + len(note) > len(song): # Add a note overlapping the end of the song
         len_result = sample_idx + len(note)
         padded_note = np.concat( (np.zeros(sample_idx), note) )
         padded_song = np.concat( (song, np.zeros(len_result - len(song))) )
         return padded_song + padded_note
-    else:
+    else:   # Add a note that ends before the end of the song
         start_of_note = sample_idx
         end_of_note = sample_idx + len(note)
         padded_note = np.concat( (np.zeros(start_of_note), note, np.zeros(len(song) - end_of_note)))
@@ -32,22 +35,32 @@ for note_int in range(-1*num_notes_lower, num_notes_higher):
     notes[note_int + num_notes_lower] = scaled_note
 
 # song_array = [[0, 2, 4, 5, 7, 9, 11, 12], [2, 4, 5, 7, 9, 11, 12, 14], [4, 5, 7, 9, 11, 12, 14, 16]]  # do re mi, plus friends
-song_array = [[0, 0, 5, 5, 7, 9, 5, 400,  #Tis a gift to be simple
-               9, 10, 12, 12, 10, 9, 400, # Tis a gift to be free
-               7, 5, 7, 7, 7, 5, 7, 9, 7, 4, 0, 400, # tis a gift to come down where we ought to be
-               0, 5, 4, 5, 7, 9, 7, 7, 9, 10, 12, 400, # and when we find ourselves in the place just right
-               9, 7, 7, 7, 9, 9, 7, 5, 5, 5, 5, 400, 400, # t'will be in the valley of love and delight
-               12, 9, 7, 9, 10, 9, 7, 5, 400, # when true simplicity is gained
-               7, 9, 9, 10, 12, 9, 7, 7, 9, 7, 400, #to bow and to bend we shan't be ashamed
-               0, 5, 5, 7, 9, 9, 10, 12, 400, # to turn, turn, will be our delight
-               10, 9, 7, 7, 9, 9, 7, 5, 5, 5] # till by turning, turning we come out right
-               ]
+song_array = [
+    [0, 0, [5,2], 5, 7, 9, 5,  #Tis a gift to be simple,
+     9, 10, [12,2], 12, 10, [9,2],  # Tis a gift to be free.
+     7, 5, [7,2], [7,2], [7,2], [5,2], 7, 9, 7, 4, [0,2], # Tis a gift to come down where we ought to be,
+     [0,2], 5, 4, 5, 7, [9,2], 7, 7, [9,2], [10,2], [12,2], # and when we find ourselves in the place just right,
+     [9,2], [7,2], 7, 7, 9, [9,2], 7, [5,2], 5, 5, [5,2], # t'will be in the valley of love and delight.
+     [12,4], [9,3], 7, 9, 10, 9, 7, [5,3], # When true simplicity is gained,
+     7, [9,2], 9, 10, [12,2], [9,2], [7,2], 7, 9, [7,2], #to bow and to bend we shan't be ashamed.
+     0, [5,4], [5,3], 7, [9,2], 9, 10, [12,2], # To turn, turn, will be our delight,
+     10, 9, [7,2], [7,2], [9,2], 9, 7, [5,2], [5,2], [5,4]], # till by turning, turning we come out right.
+     []
+     ]
 #song_array = [[0, 12, 400, 400, 7, 7]] # rest for undefined notes
 sound_signal = notes[0][0:1]
 for score in song_array:
+    sample_idx = 0
     for note_idx in range(len(score)):
-        note_value = score[note_idx] + zero_note
-        sample_idx = int(samples_between_notes * note_idx)
+        this_note_obj = score[note_idx]
+        if isinstance(this_note_obj, int):  # simple note
+            note_value = this_note_obj + zero_note
+            sample_idx = int(sample_idx + samples_between_notes)
+        elif isinstance(this_note_obj, list):   #note that may be of a different length than a simple note
+            note_value = this_note_obj[0] + zero_note
+            sample_idx = int(sample_idx + samples_between_notes * this_note_obj[1])
+        else:
+            print('oops!')
         if note_value in notes:
             sound_signal = add_new_note(sound_signal, notes[note_value], sample_idx)
         else:
