@@ -51,7 +51,7 @@ last_note = num_notes_lower + num_notes_higher - 1
 
 time_between_notes = 0.25   # you can choose the shortest note (e.g. an eighth note) to avoid fractions in the song array,
                             # though it's not required
-zero_note = 30
+zero_note = 15
 
 samples_between_notes = time_between_notes * sample_rate
 
