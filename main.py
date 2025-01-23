@@ -1,6 +1,7 @@
 import librosa
 import soundfile
 import numpy as np
+from datetime import datetime
 
 def add_new_note(song, note, sample_idx):
     if sample_idx > len(song): # Add a note after the end of the song.  Pad the extra space with zeros.
@@ -40,7 +41,7 @@ song_array = [
      9, 10, [12,2], 12, 10, [9,2],  # Tis a gift to be free.
      7, 5, [7,2], [7,2], [7,2], [5,2], 7, 9, 7, 4, [0,2], # Tis a gift to come down where we ought to be,
      [0,2], 5, 4, 5, 7, [9,2], 7, 7, [9,2], [10,2], [12,2], # and when we find ourselves in the place just right,
-     [9,2], [7,2], 7, 7, 9, [9,2], 7, [5,2], 5, 5, [5,2], # t'will be in the valley of love and delight.
+     [9,2], [7,2], 7, 7, 9, [9,2], 7, [5,2], 5, 5, [5,4], # t'will be in the valley of love and delight.
      [12,4], [9,3], 7, 9, 10, 9, 7, [5,3], # When true simplicity is gained,
      7, [9,2], 9, 10, [12,2], [9,2], [7,2], 7, 9, [7,2], #to bow and to bend we shan't be ashamed.
      0, [5,4], [5,3], 7, [9,2], 9, 10, [12,2], # To turn, turn, will be our delight,
@@ -53,18 +54,23 @@ for score in song_array:
     sample_idx = 0
     for note_idx in range(len(score)):
         this_note_obj = score[note_idx]
+
         if isinstance(this_note_obj, int):  # simple note
             note_value = this_note_obj + zero_note
-            sample_idx = int(sample_idx + samples_between_notes)
         elif isinstance(this_note_obj, list):   #note that may be of a different length than a simple note
             note_value = this_note_obj[0] + zero_note
-            sample_idx = int(sample_idx + samples_between_notes * this_note_obj[1])
-        else:
-            print('oops!')
+
         if note_value in notes:
             sound_signal = add_new_note(sound_signal, notes[note_value], sample_idx)
         else:
             sound_signal = add_new_note(sound_signal, 0*notes[0], sample_idx) # rest if there is no note defined
+
+        if isinstance(this_note_obj, int):  # simple note
+            sample_idx = sample_idx + int(samples_between_notes)
+        elif isinstance(this_note_obj, list):   #note that may be of a different length than a simple note
+            sample_idx = sample_idx + int(samples_between_notes * this_note_obj[1])     
+
         x = 2
 soundfile.write('sound_test/output_song.wav', sound_signal, sample_rate)
+print('Done! ' + str(datetime.now()))
 x = 2
