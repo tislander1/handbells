@@ -42,7 +42,7 @@ def make_song_from_array(notes, song_array, samples_between_notes):
                 sample_idx = sample_idx + int(samples_between_notes * this_note_obj[1])
     return sound_signal
 
-note, sample_rate = librosa.load('sound_test/11079__angstrom__d1.wav')
+note, sample_rate = librosa.load('sound_test/418424__johnnyguitar01__tubular-bell.wav')
 note = note[0:len(note)//3] #trim off quiet following the note
 num_notes_lower = 37
 num_notes_higher = 13
@@ -51,7 +51,7 @@ last_note = num_notes_lower + num_notes_higher - 1
 
 time_between_notes = 0.25   # you can choose the shortest note (e.g. an eighth note) to avoid fractions in the song array,
                             # though it's not required
-zero_note = 15
+zero_note = 20
 
 samples_between_notes = time_between_notes * sample_rate
 
@@ -76,6 +76,6 @@ song_array = [
 
 sound_signal = make_song_from_array(notes, song_array, samples_between_notes)
 
-soundfile.write('sound_test/output_song.wav', sound_signal, sample_rate)
+soundfile.write('sound_test/output.wav', sound_signal, sample_rate)
 print('Done! ' + str(datetime.now()))
 x = 2
