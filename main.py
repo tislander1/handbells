@@ -18,6 +18,30 @@ def add_new_note(song, note, sample_idx):
         padded_note = np.concat( (np.zeros(start_of_note), note, np.zeros(len(song) - end_of_note)))
         return padded_note + song
 
+def make_song_from_array(notes, song_array, samples_between_notes):
+    #song_array = [[0, 12, 400, 400, 7, 7]] # rest for undefined notes
+    sound_signal = notes[0][0:1]
+    for score in song_array:
+        sample_idx = 0
+        for note_idx in range(len(score)):
+            this_note_obj = score[note_idx]
+
+            if isinstance(this_note_obj, int):  # simple note
+                note_value = this_note_obj + zero_note
+            elif isinstance(this_note_obj, list):   #note that may be of a different length than a simple note
+                note_value = this_note_obj[0] + zero_note
+
+            if note_value in notes:
+                sound_signal = add_new_note(sound_signal, notes[note_value], sample_idx)
+            else:
+                sound_signal = add_new_note(sound_signal, 0*notes[0], sample_idx) # rest if there is no note defined
+
+            if isinstance(this_note_obj, int):  # simple note
+                sample_idx = sample_idx + int(samples_between_notes)
+            elif isinstance(this_note_obj, list):   #note that may be of a different length than a simple note
+                sample_idx = sample_idx + int(samples_between_notes * this_note_obj[1])
+    return sound_signal
+
 note, sample_rate = librosa.load('sound_test/11079__angstrom__d1.wav')
 note = note[0:len(note)//3] #trim off quiet following the note
 num_notes_lower = 37
@@ -25,7 +49,8 @@ num_notes_higher = 13
 first_note = 0
 last_note = num_notes_lower + num_notes_higher - 1
 
-time_between_notes = 0.25
+time_between_notes = 0.25   # you can choose the shortest note (e.g. an eighth note) to avoid fractions in the song array,
+                            # though it's not required
 zero_note = 30
 
 samples_between_notes = time_between_notes * sample_rate
@@ -44,33 +69,13 @@ song_array = [
      [9,2], [7,2], 7, 7, 9, [9,2], 7, [5,2], 5, 5, [5,4], # t'will be in the valley of love and delight.
      [12,4], [9,3], 7, 9, 10, 9, 7, [5,3], # When true simplicity is gained,
      7, [9,2], 9, 10, [12,2], [9,2], [7,2], 7, 9, [7,2], #to bow and to bend we shan't be ashamed.
-     0, [5,4], [5,3], 7, [9,2], 9, 10, [12,2], # To turn, turn, will be our delight,
+     [0,2], [5,4], [5,3], 7, [9,2], 9, 10, [12,2], # To turn, turn, will be our delight,
      10, 9, [7,2], [7,2], [9,2], 9, 7, [5,2], [5,2], [5,4]], # till by turning, turning we come out right.
      []
      ]
-#song_array = [[0, 12, 400, 400, 7, 7]] # rest for undefined notes
-sound_signal = notes[0][0:1]
-for score in song_array:
-    sample_idx = 0
-    for note_idx in range(len(score)):
-        this_note_obj = score[note_idx]
 
-        if isinstance(this_note_obj, int):  # simple note
-            note_value = this_note_obj + zero_note
-        elif isinstance(this_note_obj, list):   #note that may be of a different length than a simple note
-            note_value = this_note_obj[0] + zero_note
+sound_signal = make_song_from_array(notes, song_array, samples_between_notes)
 
-        if note_value in notes:
-            sound_signal = add_new_note(sound_signal, notes[note_value], sample_idx)
-        else:
-            sound_signal = add_new_note(sound_signal, 0*notes[0], sample_idx) # rest if there is no note defined
-
-        if isinstance(this_note_obj, int):  # simple note
-            sample_idx = sample_idx + int(samples_between_notes)
-        elif isinstance(this_note_obj, list):   #note that may be of a different length than a simple note
-            sample_idx = sample_idx + int(samples_between_notes * this_note_obj[1])     
-
-        x = 2
 soundfile.write('sound_test/output_song.wav', sound_signal, sample_rate)
 print('Done! ' + str(datetime.now()))
 x = 2
