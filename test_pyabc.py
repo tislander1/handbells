@@ -7,4 +7,6 @@ with open('sound_test/valce-ardennaise.abc', 'r') as f:
 
 tune1 = Tune(abc=this_abc_song)
 print(tune1.tokens)
+pitches = [item.pitch.abs_value for item in tune1.tokens if hasattr(item, 'pitch') ] 
+print('pitches:', pitches)
 x = 2
