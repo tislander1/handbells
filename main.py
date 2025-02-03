@@ -61,14 +61,14 @@ def make_song_from_array(notes, song_array, samples_between_notes):
             #     sample_idx = sample_idx + int(samples_between_notes * this_note_obj[1])
     return sound_signal
 
-note, sample_rate = librosa.load('sound_test/piano_fsharp.mp3')
+note, sample_rate = librosa.load('sound_test/418424__johnnyguitar01__tubular-bell.wav')
 note = note[0:len(note)] #trim off quiet following the note
 num_notes_lower = 37
 num_notes_higher = 13
 first_note = 0
 last_note = num_notes_lower + num_notes_higher - 1
 
-time_between_notes = 0.5  # you can choose the shortest note (e.g. an eighth note) to avoid fractions in the song array,
+time_between_notes = 0.25  # you can choose the shortest note (e.g. an eighth note) to avoid fractions in the song array,
                             # though it's not required
 zero_note = 20
 
@@ -76,7 +76,7 @@ samples_between_notes = time_between_notes * sample_rate
 
 notes = {}
 for note_int in range(-1*num_notes_lower, num_notes_higher):
-    scaled_note= librosa.effects.pitch_shift(y=note, sr=sample_rate, bins_per_octave=12, n_steps=note_int, scale=True)
+    scaled_note= librosa.effects.pitch_shift(y=note, sr=sample_rate, bins_per_octave=12*1000, n_steps=note_int*1000, scale=True)
     notes[note_int + num_notes_lower] = scaled_note
 
 # song_array = [[0, 2, 4, 5, 7, 9, 11, 12], [2, 4, 5, 7, 9, 11, 12, 14], [4, 5, 7, 9, 11, 12, 14, 16]]  # do re mi, plus friends
