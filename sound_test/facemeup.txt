@@ -1,0 +1,13 @@
+
+X:1
+%
+T:Face Me Up
+M:C|
+L:1/8
+R:Hornpipe
+S:Kerr - Merry Melodies, vol. 4, No. 306
+Z:AK/Fiddler's Companion
+K:F
+c2f2d2f2 | (cd)cB AG F2 | ABcd efga |1 (g^f)ga g4 :|2 (gf)ga f4 ||
+|: bagb agfa | gfeg f2a2 | g^fga g=fed | (c=B)cd (c_B)AB |
+c2f2d2f2 | (cd)cB AB c2 | defd efge | f2a2f2z5 :||
