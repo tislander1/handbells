@@ -70,6 +70,26 @@ time_between_notes = 0.25  # you can choose the shortest note (e.g. an eighth no
                             # though it's not required
 zero_note = -10
 
+mode = 'native'
+
+if mode == 'native':
+    song_array_str = '''[
+    [[(0,1,0),(4,1,0),(7,1,0)], [5,2], 5, 7, 9, 5,  #Tis a gift to be simple,
+     9, 10, [12,2], 12, 10, [9,2],  # Tis a gift to be free.
+     7, 5, [7,2], [7,2], [7,2], [5,2], 7, 9, 7, 4, [0,2], # Tis a gift to come down where we ought to be,
+     [0,2], 5, 4, 5, 7, [9,2], 7, 7, [9,2], [10,2], [12,2], # and when we find ourselves in the place just right,
+     [9,2], [7,2], 7, 7, 9, [9,2], 7, [5,2], 5, 5, [5,4], # t'will be in the valley of love and delight.
+     [12,4], [9,3], 7, 9, 10, 9, 7, [5,3], # When true simplicity is gained,
+     7, [9,2], 9, 10, [12,2], [9,2], [7,2], 7, 9, [7,2], #to bow and to bend we shan't be ashamed.
+     [0,2], [5,4], [5,3], 7, [9,2], 9, 10, [12,2], # To turn, turn, will be our delight,
+     10, 9, [7,2], [7,2], [9,2], 9, 7, [5,2], [5,2], [5,4]], # till by turning, turning we come out right.
+     []
+     ]'''
+    song_array = eval(song_array_str)
+elif mode == 'abc':
+    x = 2
+
+
 note, sample_rate = librosa.load(input_sound_file)
 
 if note_trim_fraction > 1.0:
@@ -88,19 +108,6 @@ samples_between_notes = time_between_notes * sample_rate
 #   duration T*time_between_notes, and delay D before the beginning of the note.
 #   The note group will be assumed to last max(Ti + Di) for all i.
 #   This allows the entry of multiple notes at the same time, as well as delays.
-
-song_array = [
-    [[(0,1,0),(4,1,0),(7,1,0)], [5,2], 5, 7, 9, 5,  #Tis a gift to be simple,
-     9, 10, [12,2], 12, 10, [9,2],  # Tis a gift to be free.
-     7, 5, [7,2], [7,2], [7,2], [5,2], 7, 9, 7, 4, [0,2], # Tis a gift to come down where we ought to be,
-     [0,2], 5, 4, 5, 7, [9,2], 7, 7, [9,2], [10,2], [12,2], # and when we find ourselves in the place just right,
-     [9,2], [7,2], 7, 7, 9, [9,2], 7, [5,2], 5, 5, [5,4], # t'will be in the valley of love and delight.
-     [12,4], [9,3], 7, 9, 10, 9, 7, [5,3], # When true simplicity is gained,
-     7, [9,2], 9, 10, [12,2], [9,2], [7,2], 7, 9, [7,2], #to bow and to bend we shan't be ashamed.
-     [0,2], [5,4], [5,3], 7, [9,2], 9, 10, [12,2], # To turn, turn, will be our delight,
-     10, 9, [7,2], [7,2], [9,2], 9, 7, [5,2], [5,2], [5,4]], # till by turning, turning we come out right.
-     []
-     ]
 
 sound_signal = make_song_from_array(note=note, song_array=song_array, samples_between_notes=samples_between_notes, zero_note=zero_note)
 
