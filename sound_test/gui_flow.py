@@ -7,47 +7,6 @@ from PySide6.QtGui import QTextCursor
 from PySide6.QtWidgets import QPushButton, QLineEdit, QLabel, QComboBox, QPlainTextEdit
 from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QMainWindow, QGroupBox
 
-def format_recipe(input):
-    input_split = input.split('\n')
-    if len(input_split) == 1:
-        return input
-    else:
-        input_split = ['&#8226; ' + item + '<br>' for item in input_split]
-        return ''.join(input_split)
-
-def generate_html_string(recipes, width_mm, height_mm, recipe_number_list = None):
-    if recipe_number_list == None:
-        recipe_number_list = range(len(recipes['data']))
-    output = ''
-    output += '<!DOCTYPE html>\n'
-    output += '<body>\n'
-    for rec_num in recipe_number_list:
-        recipe = recipes['data'][rec_num]
-        
-
-        output += '<table border="1" style="width:' + str(width_mm) + 'mm; height:' + str(height_mm) +'mm; display:block; overflow: auto;">\n'
-        output += '<tr><td>\n<table border="0">\n'
-        output += '<tr><td><font color="green"><b>' + str(rec_num) + '</b></font></td><td>' + str(recipe['name']) + '</td><td><font color="green"><b>&nbsp;' + str(recipe['meal']) + '</b></font></td></tr>\n'
-        output += '</table></td></tr>\n'
-        output += '<tr><td><font color="green"><b>Ingr: </b></font>' + str(recipe['ingredients']) + '</td></tr>\n'
-        output += '<tr><td style="position: sticky; top: 0;">\n'
-        output += '<font color="green"><b>Instr: </b></font>' + format_recipe(recipe['instructions'])
-        output += '<tr><td style="position: sticky; top: 0;">\n'
-        output += '<font color="green"><b>Cook: </b></font>' + format_recipe(recipe['cooking'])
-        output += '<tr><td style="position: sticky; top: 0;">\n'
-        output += '<font color="green"><b>Notes: </b></font>' + format_recipe(recipe['notes'])
-        output += '</td></tr>\n'
-        output += '</table><p>\n'
-    output += '</body>\n'
-    return output
-
-
-class MainWindow(QMainWindow):
-
-    def __init__(self):
-        super(MainWindow, self).__init__()
-
-        self.setWindowTitle("Handpan Overdrive")
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -86,8 +45,6 @@ class MainWindow(QMainWindow):
 
         #Publishing -----------------------------------------------------------------------------------
         layout_pub = QHBoxLayout() # publishing tool
-        pub_button = QPushButton(" Publish")
-        pub_button.clicked.connect(self.publish_button_handler)
         text_pub1 = QLabel(" Recipe #s or leave blank:")
         self.tok['publish_list'] = QLineEdit("")
         text_width = QLabel(" Print width (mm):")
@@ -98,7 +55,7 @@ class MainWindow(QMainWindow):
         self.tok['publish_height'].setMaximumWidth(100)
         text_html_file = QLabel(' HTML file:')
         self.tok['publish_html_file'] =QLineEdit("recipes.html")
-        layout_pub.addWidget(pub_button)
+
         layout_pub.addWidget(text_pub1)
         layout_pub.addWidget(self.tok['publish_list'])
         layout_pub.addWidget(text_width)
@@ -315,28 +272,6 @@ class MainWindow(QMainWindow):
         self.last_recipe = len(self.all_recipes['data']) - 1
         self.current_recipe = self.last_recipe
         self.update_recipe_display(self.current_recipe)
-    
-    def publish_button_handler(self):
-        width_mm = eval(self.tok['publish_width'].text())
-        height_mm = eval(self.tok['publish_height'].text())
-        html_file = self.tok['publish_html_file'].text()
-        try:
-            recipe_number_list = eval(self.tok['publish_list'].text())
-        except:
-            recipe_number_list = None
-        if isinstance(recipe_number_list, int):
-            recipe_number_list = [recipe_number_list]
-        elif isinstance(recipe_number_list, list):
-            recipe_number_list = recipe_number_list
-        else:
-            recipe_number_list = None
-        html_string = generate_html_string(self.all_recipes, width_mm, height_mm, recipe_number_list)
-        with open(html_file, 'w') as f:
-            f.write(html_string)
-            dir1 = os.getcwd()
-        webbrowser.open('file:///' + dir1 + '/' + html_file)
-        self.tok['status'].moveCursor(QTextCursor.End)
-        self.tok['status'].insertPlainText('Recipes published to ' + str(html_file) +'\n')
 
 
 app = QApplication(sys.argv)
