@@ -1,7 +1,78 @@
 import librosa
 import soundfile
 import numpy as np
+from pyabc import Tune
 from datetime import datetime
+
+def abc_to_song_array(abc_song_string):
+    # converts a melody in ABC format to an array format consumable by main.py
+    tune1 = Tune(abc=abc_song_string)
+
+    song_array_1 = []
+    for ix in range(len(tune1.tokens)):
+        tok = tune1.tokens[ix]
+        if 'note' in 'note' in tok.__dict__:
+
+            note = tok.pitch.abs_value
+
+            if tok.accidental is not None:  #fix bug with accidentals not having the right abs_value in original code
+                x = 2
+                if tok.accidental == '^':
+                    note += 1
+                elif tok.accidental == '^^':
+                    note += 2
+                elif tok.accidental == '_':
+                    note -= 1
+                elif tok.accidental == '__':
+                    note -= 2
+                x = 2
+
+            duration = tok.duration
+            song_array_1.append([note, duration])
+        elif 'z' in tok._text:  #rest
+            note = 'rest'  #rest
+            duration = float(tok.length[0])
+            song_array_1.append([note, duration])
+        elif ('[' in tok._text) or (']' in tok._text):  #chord or 
+            if tok._text == '[':
+                song_array_1.append('begin chord')
+            elif tok._text == ']':
+                song_array_1.append('end chord')
+            elif tok._text == '[|':
+                song_array_1.append('beam')
+            elif tok._text == '|]':
+                song_array_1.append('beam')
+            elif tok._text == ']|':
+                song_array_1.append('end chord')
+            elif tok._text == '|[':
+                song_array_1.append('begin chord')
+            elif tok._text == '][':
+                song_array_1.append('end chord')
+                song_array_1.append('begin chord')            
+            elif tok._text == ']|[':
+                song_array_1.append('end chord')
+                song_array_1.append('begin chord')
+        song_array = []
+        inside_chord = False
+        for tok in song_array_1:
+            if 'begin chord' in tok:
+                inside_chord = True
+                this_chord = []
+            elif 'end chord' in tok:
+                inside_chord = False
+                song_array.append(this_chord)
+            else:
+                if not inside_chord:
+                    if tok[1] == 1:
+                        song_array.append(int(tok[0]))
+                    else:
+                        if isinstance(tok[0], str):
+                            song_array.append([tok[0], tok[1]])
+                        else:
+                            song_array.append([int(tok[0]), tok[1]])
+                else:
+                    this_chord.append((int(tok[0]), tok[1], 0.0))
+    return [song_array]
 
 def add_new_note(song, note, sample_idx):
     if sample_idx > len(song): # Add a note after the end of the song.  Pad the extra space with zeros.
@@ -61,7 +132,7 @@ def make_song_from_array(note, song_array, samples_between_notes, zero_note):
             #     sample_idx = sample_idx + int(samples_between_notes * this_note_obj[1])
     return sound_signal
 
-input_sound_file = 'sound_test/418424__johnnyguitar01__tubular-bell.wav'
+input_sound_file = 'sound_test/66218__percussionfiend__2.wav'
 output_sound_file = 'sound_test/output.wav'
 
 bins_per_octave = 12
@@ -70,7 +141,7 @@ time_between_notes = 0.25  # you can choose the shortest note (e.g. an eighth no
                             # though it's not required
 zero_note = -10
 
-mode = 'native'
+mode = 'abc'
 
 if mode == 'native':
     song_array_str = '''[
@@ -87,7 +158,21 @@ if mode == 'native':
      ]'''
     song_array = eval(song_array_str)
 elif mode == 'abc':
-    x = 2
+    this_abc_song = '''
+X:1
+%
+T:Face Me Up
+M:C|
+L:1/8
+R:Hornpipe
+S:Kerr - Merry Melodies, vol. 4, No. 306
+Z:AK/Fiddler's Companion
+K:F
+c2f2d2f2 | (cd)cB AG F2 | ABcd efga |1 (g^f)ga g4 :|2 (gf)ga f4 ||
+|: bagb agfa | gfeg f2a2 | g^fga g=fed | (c=B)cd (c_B)AB |
+c2f2d2f2 | (cd)cB AB c2 | defd efge | f2a2f2z5 :||
+'''
+    song_array = abc_to_song_array(this_abc_song)
 
 
 note, sample_rate = librosa.load(input_sound_file)
