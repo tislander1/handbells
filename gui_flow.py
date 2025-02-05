@@ -259,6 +259,7 @@ class MainWindow(QMainWindow):
     def generate_song(self):
 
         self.tok['status'].insertPlainText('\nBeginning song generation.')
+        self.tok['status'].moveCursor(QTextCursor.End)
 
         input_sound_file = self.tok['note'].text()
         mode = self.tok['mode'].currentText()
@@ -291,6 +292,7 @@ class MainWindow(QMainWindow):
         soundfile.write(output_sound_file, sound_signal, sample_rate)
         self.tok['status'].insertPlainText('\nResults written to ' + output_sound_file + '.')
         self.tok['status'].insertPlainText('\nDone! Current time is ' + str(datetime.now()) + '.')
+        self.tok['status'].moveCursor(QTextCursor.End)
 
 
     def update_program_record(self):
