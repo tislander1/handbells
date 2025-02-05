@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, Q
 
 import librosa
 import soundfile
+import sounddevice
 import numpy as np
 from pyabc import Tune
 from datetime import datetime
@@ -293,6 +294,7 @@ class MainWindow(QMainWindow):
         self.tok['status'].insertPlainText('\nResults written to ' + output_sound_file + '.')
         self.tok['status'].insertPlainText('\nDone! Current time is ' + str(datetime.now()) + '.')
         self.tok['status'].moveCursor(QTextCursor.End)
+        sounddevice.play(sound_signal, sample_rate)
 
 
     def update_program_record(self):
