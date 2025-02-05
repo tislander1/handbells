@@ -248,17 +248,25 @@ class MainWindow(QMainWindow):
         widget.setLayout(self.layout1)
         self.setCentralWidget(widget)
 
-    def generate_song(self):
-        input_sound_file = self.tok['note']
-        bins_per_octave = self.tok['half_steps_per_octave']
-        note_trim_fraction = self.tok['trim']    # can trim off end of note if desired (just make this less than 1.0)
-        time_between_notes = self.tok['time_between_notes']  # you can choose the shortest note (e.g. an eighth note)
-                                                # to avoid fractions in the song array, though it's not required
-        zero_note = self.tok['zero_note']
-        mode = self.tok['mode']
-        song_array_str = self.tok['song']
+        self.program_config['data']['note'] = self.tok['note'].text()
+        self.program_config['data']['mode'] = self.tok['mode'].currentText()
+        self.program_config['data']['half_steps_per_octave'] = self.tok['half_steps_per_octave'].text()
+        self.program_config['data']['trim'] = self.tok['trim'].text() 
+        self.program_config['data']['zero_note'] = self.tok['zero_note'].text()
+        self.program_config['data']['time_between_notes'] = self.tok['time_between_notes'].text()          
+        self.program_config['data']['song'] = self.tok['song'].toPlainText()
 
-        output_sound_file = 'src/output1.wav'
+    def generate_song(self):
+        input_sound_file = self.tok['note'].text()
+        mode = self.tok['mode'].currentText()
+        bins_per_octave = int(self.tok['half_steps_per_octave'].text())
+        note_trim_fraction = float(self.tok['trim'].text())    # can trim off end of note if desired (just make this less than 1.0)
+        zero_note = float(self.tok['zero_note'].text())
+        time_between_notes = float(self.tok['time_between_notes'].text())  # you can choose the shortest note (e.g. an eighth note)
+                                                # to avoid fractions in the song array, though it's not required
+        song_array_str = self.tok['song'].toPlainText()
+
+        output_sound_file = 'output.wav'
 
         if mode == 'XyloFonyX':
             song_array = eval(song_array_str)
@@ -278,7 +286,8 @@ class MainWindow(QMainWindow):
                                             sample_rate=sample_rate, bins_per_octave=bins_per_octave)
 
         soundfile.write(output_sound_file, sound_signal, sample_rate)
-        self.tok['status'].insertPlainText('Done! ' + str(datetime.now()))
+        self.tok['status'].insertPlainText('Results written to ' + output_sound_file +'.\n')
+        self.tok['status'].insertPlainText('Done! Current time is ' + str(datetime.now())+'.')
 
 
     def update_program_record(self):
