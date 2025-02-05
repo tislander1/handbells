@@ -12,7 +12,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        self.setWindowTitle("Handpan Overdrive ver. 0.1")
+        self.setWindowTitle("Xylofonyx ver. 0.1")
 
         self.tok = {}
         self.all_recipes = {
@@ -29,106 +29,60 @@ class MainWindow(QMainWindow):
         
         #finder tool    -------------------------------------------------------------------
         layout_finder = QHBoxLayout() 
-        find_button = QPushButton(" Find")
-        find_button.clicked.connect(self.find_button_handler)
-        self.tok['find_item'] = QLineEdit("")
-        text1 = QLabel(" in the ")
-        self.tok['find_pulldown'] = QComboBox()
-        self.tok['find_pulldown'].addItems(['Recipe #', 'Recipe Name', 'Ingredients', 'Instructions', 'Cooking', 'Meal', 'Notes', 'Any text field'])
-        layout_finder.addWidget(find_button)
-        layout_finder.addWidget(self.tok['find_item'])
+        note_sample_text = QLabel(" Note sample (.wav or .mp3): ")
+        layout_finder.addWidget(note_sample_text)
+        self.tok['note'] = QLineEdit('sound_test/66218__percussionfiend__2.wav')
+        text1 = QLabel(" Mode: ")
+        self.tok['mode'] = QComboBox()
+        self.tok['mode'].addItems(['ABC notation', 'Xylofonix'])
+        layout_finder.addWidget(self.tok['note'])
         layout_finder.addWidget(text1)
-        layout_finder.addWidget(self.tok['find_pulldown'])
+        layout_finder.addWidget(self.tok['mode'])
         groupbox1 = QGroupBox("Recipe Finder")
         groupbox1.setLayout(layout_finder)
         self.layout1.addWidget(groupbox1)
 
         #Publishing -----------------------------------------------------------------------------------
         layout_pub = QHBoxLayout() # publishing tool
-        text_pub1 = QLabel(" Recipe #s or leave blank:")
-        self.tok['publish_list'] = QLineEdit("")
-        text_width = QLabel(" Print width (mm):")
-        self.tok['publish_width'] = QLineEdit("")
-        self.tok['publish_width'].setMaximumWidth(100)
-        text_height = QLabel(" Height:")
-        self.tok['publish_height'] = QLineEdit("")
-        self.tok['publish_height'].setMaximumWidth(100)
-        text_html_file = QLabel(' HTML file:')
-        self.tok['publish_html_file'] =QLineEdit("recipes.html")
+
+        text_pub1 = QLabel(" Half steps per octave (default 12):")
+        self.tok['half_steps_per_octave'] = QLineEdit("12")
+
+        text_trim = QLabel(" Note trim (0 to 1):")
+        self.tok['trim'] = QLineEdit("1.0")
+
+        frequency_shift_number = QLabel(" Frequency shift (half steps):")
+        self.tok['zero_note'] = QLineEdit("-10")  
+
+        time_btw_notes_label = QLabel(" Time between notes (sec):")
+        self.tok['time_between_notes'] = QLineEdit("0.25")
 
         layout_pub.addWidget(text_pub1)
-        layout_pub.addWidget(self.tok['publish_list'])
-        layout_pub.addWidget(text_width)
-        layout_pub.addWidget(self.tok['publish_width'])
+        layout_pub.addWidget(self.tok['half_steps_per_octave'])
+
+        layout_pub.addWidget(text_trim)
+        layout_pub.addWidget(self.tok['trim'])
+
+        layout_pub.addWidget(time_btw_notes_label)
+        layout_pub.addWidget(self.tok['time_between_notes'])        
         
-        layout_pub.addWidget(text_height)
-        layout_pub.addWidget(self.tok['publish_height'])
-        layout_pub.addWidget(text_html_file)
-        layout_pub.addWidget(self.tok['publish_html_file'])
-        groupbox_pub = QGroupBox("Publish recipes to HTML")
+        layout_pub.addWidget(frequency_shift_number)
+        layout_pub.addWidget(self.tok['zero_note'])
+
+        groupbox_pub = QGroupBox("Configuration")
         groupbox_pub.setLayout(layout_pub)
         self.layout1.addWidget(groupbox_pub)
-
-        #Previous/next buttons    -------------------------------------------------------------------
-        layout3 = QHBoxLayout() # previous/next tool
-        prev_button = QPushButton("Previous Recipe")
-        prev_button.clicked.connect(self.previous_button_handler)
-        next_button = QPushButton("Next Recipe")
-        next_button.clicked.connect(self.next_button_handler)
-        layout3.addWidget(prev_button)
-        layout3.addWidget(next_button)
-        self.layout1.addLayout( layout3 )
 
         layout_main_recipe = QVBoxLayout() #main layout for window
 
         #Main recipe --------------------------------------------------------------------------
-        layout_rec_name = QHBoxLayout()
-        text_number = QLabel(' Rec. #:')
-        self.tok['recipe_number'] = QLineEdit("0/" + str(self.last_recipe))
-        self.tok['recipe_number'].setReadOnly(True)
-        self.tok['recipe_number'].setMaximumSize(100, 100)
-        text_name = QLabel(' Name:')
-        self.tok['recipe_name'] = QLineEdit("")
-        text_meal = QLabel(' Meal:')
-        self.tok['meal'] = QLineEdit("")
-        self.tok['meal'].setMaximumSize(150, 150)
-        layout_rec_name.addWidget(text_number)
-        layout_rec_name.addWidget(self.tok['recipe_number'])
-        layout_rec_name.addWidget(text_name)
-        layout_rec_name.addWidget(self.tok['recipe_name'])
-        layout_rec_name.addWidget(text_meal)
-        layout_rec_name.addWidget(self.tok['meal'])
-        layout_main_recipe.addLayout(layout_rec_name)
 
-        layout_ingr = QHBoxLayout()
-        ingredients_text = QLabel(' Ingredients:')
-        self.tok['ingredients'] = QPlainTextEdit('')
-        layout_ingr.addWidget(ingredients_text)
-        layout_ingr.addWidget(self.tok['ingredients'])
-        layout_main_recipe.addLayout(layout_ingr)
+        layout_song = QHBoxLayout()
+        self.tok['song'] = QPlainTextEdit('')
+        layout_song.addWidget(self.tok['song'])
+        layout_main_recipe.addLayout(layout_song)
 
-        layout_instruct = QHBoxLayout()
-        instructions_text = QLabel(' Instructions:')
-        self.tok['instructions'] = QPlainTextEdit('')
-        layout_instruct.addWidget(instructions_text)
-        layout_instruct.addWidget(self.tok['instructions'])
-        layout_main_recipe.addLayout(layout_instruct)
-
-        layout_cooking = QHBoxLayout()
-        cooking_text =     QLabel(' Cooking:')
-        self.tok['cooking'] = QPlainTextEdit('')
-        layout_cooking.addWidget(cooking_text)
-        layout_cooking.addWidget(self.tok['cooking'])
-        layout_main_recipe.addLayout(layout_cooking)
-    
-        layout_notes = QHBoxLayout()
-        notes_text = QLabel(' Notes:')
-        self.tok['notes'] = QPlainTextEdit('')
-        layout_notes.addWidget(notes_text)
-        layout_notes.addWidget(self.tok['notes'])
-        layout_main_recipe.addLayout(layout_notes)
-
-        groupbox_main_recipe = QGroupBox("Enter a recipe")
+        groupbox_main_recipe = QGroupBox("Enter a song in ABC notation or Xylofonyx format")
         groupbox_main_recipe.setLayout(layout_main_recipe)
         self.layout1.addWidget(groupbox_main_recipe)
 
@@ -181,75 +135,6 @@ class MainWindow(QMainWindow):
         self.tok['notes'].setPlainText(self.all_recipes['data'][recipe_number]['notes'])
 
         self.tok['recipe_number'].setText( str(recipe_number) + '/' + str(self.last_recipe))
-
-    def find_button_handler(self):
-        print('Find button clicked.')
-        find_mapping = {'Recipe #': ['recipe_number'], 'Recipe Name': ['name'], 'Ingredients': ['ingredients'],
-        'Instructions': ['instructions'], 'Cooking' : ['cooking'], 'Meal': ['meal'], 'Notes': ['notes'],
-        'Any text field': ['name', 'ingredients', 'instructions', 'cooking', 'meal', 'notes']}
-        pulldown = self.tok['find_pulldown'].currentText()
-        find_text = self.tok['find_item'].text().lower()
-        find_fields = find_mapping[pulldown]
-        found_dict = {}
-        if find_fields != ['recipe_number']:
-            for item in find_fields:
-                for ix in range(len(self.all_recipes['data'])):
-                    val = self.all_recipes['data'][ix][item]
-                    if find_text in val.lower():
-                        found_dict[ix] = self.all_recipes['data'][ix]['name']
-            x = 2
-            self.tok['status'].moveCursor(QTextCursor.End)
-            if len(found_dict) > 0:
-                self.current_recipe = list(found_dict.keys())[0]
-                self.tok['status'].insertPlainText('Found recipes: ' + str(found_dict) + '\n')
-                self.update_recipe_display(self.current_recipe)
-            else:
-                self.tok['status'].insertPlainText('No matching recipes were found.\n')
-        else:
-            print('Recipe number search ...')
-            found_rec_num = False
-            try:
-                rec_num = int(self.tok['find_item'].text())
-                found_rec_num = True
-            except:
-                self.tok['status'].moveCursor(QTextCursor.End)
-                self.tok['status'].insertPlainText('Could not get recipe number.\n')
-            if found_rec_num:
-                if rec_num >= 0 and rec_num <= self.last_recipe:
-                    self.current_recipe = rec_num
-                    self.update_recipe_display(self.current_recipe)
-                    self.tok['status'].moveCursor(QTextCursor.End)
-                    self.tok['status'].insertPlainText('Jumped to recipe #'+ str(rec_num) +'.\n')
-                else:
-                    self.tok['status'].moveCursor(QTextCursor.End)
-                    self.tok['status'].insertPlainText('Recipe #'+ str(rec_num) +' was not found.\n')
-
-    def previous_button_handler(self):
-        print('Previous button clicked.')
-        self.tok['status'].moveCursor(QTextCursor.End)
-        if self.current_recipe == 0:
-            self.tok['status'].insertPlainText('Beginning of records reached.\n')
-        else:
-            if self.tok['recipe_name'].text() != '':
-                self.update_recipe_record(self.current_recipe)
-            self.current_recipe = self.current_recipe - 1
-            self.update_recipe_display(self.current_recipe)            
-
-    def next_button_handler(self):
-        print('Next button clicked.')
-        self.tok['status'].moveCursor(QTextCursor.End)
-        if self.current_recipe < self.last_recipe:
-            self.update_recipe_record(self.current_recipe)
-            self.current_recipe = self.current_recipe + 1
-            self.update_recipe_display(self.current_recipe)
-        else:
-            self.tok['status'].insertPlainText('End of records reached.\n')
-            if self.current_recipe == self.last_recipe and self.tok['recipe_name'].text() != '':
-                self.update_recipe_record(self.current_recipe)
-                self.all_recipes['data'].append({'name': '', 'ingredients': '', 'instructions': ''})
-                self.current_recipe = self.current_recipe + 1
-                self.last_recipe = self.last_recipe + 1
-                self.update_recipe_display(self.current_recipe)
 
     def save_button_handler(self):
         print('Save button clicked.')
