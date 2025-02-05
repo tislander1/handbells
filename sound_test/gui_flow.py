@@ -89,7 +89,7 @@ class MainWindow(QMainWindow):
         #Save and load the recipe --------------------------------------------------------------------------
         layout_saver = QHBoxLayout() # saver tool
         text_dB_file = QLabel(" File:")
-        self.tok['json_file'] = QLineEdit("my recipe book.json")
+        self.tok['json_file'] = QLineEdit("my song file.json")
         save_button = QPushButton("Save Recipes")
         save_button.clicked.connect(self.save_button_handler)
         spacer = QLabel('      ')
@@ -109,6 +109,7 @@ class MainWindow(QMainWindow):
         self.tok['status'].setMaximumSize(10000, 100)
         status_panel.addWidget(self.tok['status'])
         status_groupbox = QGroupBox("Program status")
+        status_groupbox.setMaximumHeight(120)
         status_groupbox.setLayout(status_panel)
         self.layout1.addWidget(status_groupbox)
 
