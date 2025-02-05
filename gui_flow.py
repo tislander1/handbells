@@ -3,7 +3,7 @@ import sys
 import json
 import time
 import webbrowser
-from PySide6.QtGui import QTextCursor
+from PySide6.QtGui import QTextCursor, QFont
 from PySide6.QtWidgets import QPushButton, QLineEdit, QLabel, QComboBox, QPlainTextEdit
 from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QMainWindow, QGroupBox
 
@@ -217,8 +217,9 @@ class MainWindow(QMainWindow):
         self.tok['song'].setStyleSheet("background-color:rgba(200,200,200,255)")  
         layout_song.addWidget(self.tok['song'])
         
-        song_generator_button = QPushButton("Generate a song!")
-        song_generator_button.setStyleSheet("background-color:red;")
+        song_generator_button = QPushButton("Press here to generate a song!")
+        song_generator_button.setStyleSheet("background-color:rgba(160,255,160,255)")
+        song_generator_button.setFont(QFont('Arial', 15)) 
         song_generator_button.clicked.connect(self.generate_song)
         layout_song.addWidget(song_generator_button)
 
@@ -234,9 +235,11 @@ class MainWindow(QMainWindow):
         self.tok['json_file'] = QLineEdit("my song file.json")
         self.tok['json_file'].setStyleSheet("background-color:rgba(200,230,200,255)")
         save_button = QPushButton("Save")
+        save_button.setStyleSheet("background-color:rgba(200,230,200,255)")  
         save_button.clicked.connect(self.save_button_handler)
         spacer = QLabel('      ')
         load_button = QPushButton("Load")
+        load_button.setStyleSheet("background-color:rgba(200,230,200,255)")  
         load_button.clicked.connect(self.load_button_handler)
         layout_saver.addWidget(text_dB_file)
         layout_saver.addWidget(self.tok['json_file'])
