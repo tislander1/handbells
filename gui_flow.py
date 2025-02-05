@@ -256,24 +256,6 @@ class MainWindow(QMainWindow):
         groupbox_main_recipe.setLayout(layout_main_song_section)
         self.layout1.addWidget(groupbox_main_recipe)
 
-        #Save and load the recipe --------------------------------------------------------------------------
-        layout_saver = QHBoxLayout() # saver tool
-        text_dB_file = QLabel(" File:")
-        self.tok['json_file'] = QLineEdit("my song file.json")
-        self.tok['json_file'].setStyleSheet("background-color:rgba(200,230,200,255)")
-        save_button = QPushButton("Save")
-        save_button.setStyleSheet("background-color:rgba(200,230,200,255)")  
-        save_button.clicked.connect(self.save_button_handler)
-        spacer = QLabel('      ')
-        load_button = QPushButton("Load")
-        load_button.setStyleSheet("background-color:rgba(200,230,200,255)")  
-        load_button.clicked.connect(self.load_button_handler)
-        layout_saver.addWidget(text_dB_file)
-        layout_saver.addWidget(self.tok['json_file'])
-        layout_saver.addWidget(save_button)
-        layout_saver.addWidget(load_button)
-        self.layout1.addLayout( layout_saver )
-
         status_panel = QHBoxLayout()
         self.tok['status'] = QPlainTextEdit('')
         self.tok['status'].setReadOnly(True)
@@ -374,7 +356,6 @@ class MainWindow(QMainWindow):
         self.tok['status'].moveCursor(QTextCursor.End)
         self.update_program_record()
         file_name = QFileDialog.getSaveFileName(self, 'Save File', filter="XyloFonyX JSON (*.json);;")[0]
-        # file_name = self.tok['json_file'].text()
         with open(file_name, 'w') as f:
             json.dump(self.program_config, f)
         self.tok['status'].insertPlainText('Program data saved to ' + str(file_name) +'\n')
@@ -382,7 +363,6 @@ class MainWindow(QMainWindow):
     def load_button_handler(self):
         print('Load button clicked.')
         self.tok['status'].moveCursor(QTextCursor.End)
-        file_name = self.tok['json_file'].text()
         file_name = QFileDialog.getOpenFileName(self, 'Load File', filter="XyloFonyX JSON (*.json);;")[0]
         with open(file_name, 'r') as f:
             self.program_config = json.load(f)
