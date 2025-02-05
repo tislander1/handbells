@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, Q
 
 import librosa
 import soundfile
+import traceback
 import sounddevice
 import numpy as np
 from pyabc import Tune
@@ -258,43 +259,47 @@ class MainWindow(QMainWindow):
         self.program_config['data']['song'] = self.tok['song'].toPlainText()
 
     def generate_song(self):
+        try:
 
-        self.tok['status'].insertPlainText('\nBeginning song generation.')
-        self.tok['status'].moveCursor(QTextCursor.End)
+            self.tok['status'].insertPlainText('\nBeginning song generation.')
+            self.tok['status'].moveCursor(QTextCursor.End)
 
-        input_sound_file = self.tok['note'].text()
-        mode = self.tok['mode'].currentText()
-        bins_per_octave = int(self.tok['half_steps_per_octave'].text())
-        note_trim_fraction = float(self.tok['trim'].text())    # can trim off end of note if desired (just make this less than 1.0)
-        zero_note = float(self.tok['zero_note'].text())
-        time_between_notes = float(self.tok['time_between_notes'].text())  # you can choose the shortest note (e.g. an eighth note)
-                                                # to avoid fractions in the song array, though it's not required
-        song_array_str = self.tok['song'].toPlainText()
+            input_sound_file = self.tok['note'].text()
+            mode = self.tok['mode'].currentText()
+            bins_per_octave = int(self.tok['half_steps_per_octave'].text())
+            note_trim_fraction = float(self.tok['trim'].text())    # can trim off end of note if desired (just make this less than 1.0)
+            zero_note = float(self.tok['zero_note'].text())
+            time_between_notes = float(self.tok['time_between_notes'].text())  # you can choose the shortest note (e.g. an eighth note)
+                                                    # to avoid fractions in the song array, though it's not required
+            song_array_str = self.tok['song'].toPlainText()
 
-        output_sound_file = 'output.wav'
+            output_sound_file = 'output.wav'
 
-        if mode == 'XyloFonyX':
-            song_array = eval(song_array_str)
-        elif mode == 'ABC notation':
-            song_array = abc_to_song_array(song_array_str)
+            if mode == 'XyloFonyX':
+                song_array = eval(song_array_str)
+            elif mode == 'ABC notation':
+                song_array = abc_to_song_array(song_array_str)
 
-        note, sample_rate = librosa.load(input_sound_file)
+            note, sample_rate = librosa.load(input_sound_file)
 
-        if note_trim_fraction > 1.0:
-            note_trim_fraction = 1.0
-        note = note[0: int(note_trim_fraction * len(note))] #trim off quiet following the note
+            if note_trim_fraction > 1.0:
+                note_trim_fraction = 1.0
+            note = note[0: int(note_trim_fraction * len(note))] #trim off quiet following the note
 
-        samples_between_notes = time_between_notes * sample_rate
+            samples_between_notes = time_between_notes * sample_rate
 
-        sound_signal = make_song_from_array(note=note, song_array=song_array,
-                                            samples_between_notes=samples_between_notes, zero_note=zero_note,
-                                            sample_rate=sample_rate, bins_per_octave=bins_per_octave)
+            sound_signal = make_song_from_array(note=note, song_array=song_array,
+                                                samples_between_notes=samples_between_notes, zero_note=zero_note,
+                                                sample_rate=sample_rate, bins_per_octave=bins_per_octave)
 
-        soundfile.write(output_sound_file, sound_signal, sample_rate)
-        self.tok['status'].insertPlainText('\nResults written to ' + output_sound_file + '.')
-        self.tok['status'].insertPlainText('\nDone! Current time is ' + str(datetime.now()) + '.')
-        self.tok['status'].moveCursor(QTextCursor.End)
-        sounddevice.play(sound_signal, sample_rate)
+            soundfile.write(output_sound_file, sound_signal, sample_rate)
+            self.tok['status'].insertPlainText('\nResults written to ' + output_sound_file + '.')
+            self.tok['status'].insertPlainText('\nDone! Current time is ' + str(datetime.now()) + '.')
+            self.tok['status'].moveCursor(QTextCursor.End)
+            sounddevice.play(sound_signal, sample_rate)
+        except Exception:
+            self.tok['status'].insertPlainText('\nException:')
+            self.tok['status'].insertPlainText('\n' + traceback.format_exc())
 
 
     def update_program_record(self):
