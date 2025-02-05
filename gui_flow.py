@@ -283,7 +283,7 @@ class MainWindow(QMainWindow):
 
     def update_program_record(self):
         self.program_config['data']['note'] = self.tok['note'].text()
-        self.program_config['data']['mode'] = self.tok['mode'].text()
+        self.program_config['data']['mode'] = self.tok['mode'].currentText()
         self.program_config['data']['half_steps_per_octave'] = self.tok['half_steps_per_octave'].text()
         self.program_config['data']['trim'] = self.tok['trim'].text() 
         self.program_config['data']['zero_note'] = self.tok['zero_note'].text()
@@ -292,7 +292,7 @@ class MainWindow(QMainWindow):
 
     def update_program_display(self):
         self.tok['note'].setText(self.program_config['data']['note'])
-        self.tok['mode'].setText(self.program_config['data']['mode'])
+        self.tok['mode'].setCurrentText(self.program_config['data']['mode'])
         self.tok['half_steps_per_octave'].setText(self.program_config['data']['half_steps_per_octave'])
         self.tok['trim'].setText(self.program_config['data']['trim'])
         self.tok['zero_note'].setText(self.program_config['data']['zero_note'])
@@ -302,6 +302,7 @@ class MainWindow(QMainWindow):
     def save_button_handler(self):
         print('Save button clicked.')
         self.tok['status'].moveCursor(QTextCursor.End)
+        self.update_program_record()
         file_name = self.tok['json_file'].text()
         with open(file_name, 'w') as f:
             json.dump(self.program_config, f)
