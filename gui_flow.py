@@ -4,7 +4,7 @@ import json
 import time
 import webbrowser
 from PySide6.QtGui import QTextCursor, QFont
-from PySide6.QtWidgets import QPushButton, QLineEdit, QLabel, QComboBox, QPlainTextEdit
+from PySide6.QtWidgets import QPushButton, QLineEdit, QLabel, QComboBox, QPlainTextEdit, QCheckBox
 from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QMainWindow, QGroupBox
 
 import librosa
@@ -153,7 +153,8 @@ class MainWindow(QMainWindow):
 
         self.tok = {}
         self.program_config = {
-             'data': {'note': '', 'mode': '', 'half_steps_per_octave': '', 'trim': '', 'zero_note': '', 'song': ''}
+             'data': {'note': '', 'mode': '', 'half_steps_per_octave': '', 
+             'trim': '', 'zero_note': '', 'song': '', 'time_between_notes': '', 'invert_melody': ''}
              }
 
         print('Loading window.')
@@ -179,8 +180,10 @@ class MainWindow(QMainWindow):
         groupbox1.setLayout(layout_finder)
         self.layout1.addWidget(groupbox1)
 
-        #Publishing -----------------------------------------------------------------------------------
-        layout_pub = QHBoxLayout() # publishing tool
+        #Config -----------------------------------------------------------------------------------
+        layout_config_row1 = QHBoxLayout() # config options
+        layout_config_row2 = QHBoxLayout()
+        layout_all_config = QVBoxLayout()
 
         text_pub1 = QLabel(" Half steps per octave (default 12):")
         self.tok['half_steps_per_octave'] = QLineEdit("12")
@@ -194,18 +197,24 @@ class MainWindow(QMainWindow):
         time_btw_notes_label = QLabel(" Time between notes (sec):")
         self.tok['time_between_notes'] = QLineEdit("0.25")
         self.tok['time_between_notes'].setStyleSheet("background-color:rgba(200,230,200,255)")  
+        self.tok['invert_melody'] = QCheckBox('Invert melody')
 
-        layout_pub.addWidget(text_pub1)
-        layout_pub.addWidget(self.tok['half_steps_per_octave'])
-        layout_pub.addWidget(text_trim)
-        layout_pub.addWidget(self.tok['trim'])
-        layout_pub.addWidget(frequency_shift_number)
-        layout_pub.addWidget(self.tok['zero_note'])
-        layout_pub.addWidget(time_btw_notes_label)
-        layout_pub.addWidget(self.tok['time_between_notes'])        
+        layout_config_row1.addWidget(text_pub1)
+        layout_config_row1.addWidget(self.tok['half_steps_per_octave'])
+        layout_config_row1.addWidget(text_trim)
+        layout_config_row1.addWidget(self.tok['trim'])
+
+        layout_config_row2.addWidget(frequency_shift_number)
+        layout_config_row2.addWidget(self.tok['zero_note'])
+        layout_config_row2.addWidget(time_btw_notes_label)
+        layout_config_row2.addWidget(self.tok['time_between_notes'])     
+        layout_config_row2.addWidget(self.tok['invert_melody']) 
+
+        layout_all_config.addLayout(layout_config_row1)   
+        layout_all_config.addLayout(layout_config_row2)
 
         groupbox_pub = QGroupBox("Configuration")
-        groupbox_pub.setLayout(layout_pub)
+        groupbox_pub.setLayout(layout_all_config)
         self.layout1.addWidget(groupbox_pub)
 
         layout_main_song_section = QVBoxLayout() #main layout for window
@@ -225,7 +234,7 @@ class MainWindow(QMainWindow):
 
         layout_main_song_section.addLayout(layout_song)
 
-        groupbox_main_recipe = QGroupBox("Enter a song in abc notation or xylofonyx format")
+        groupbox_main_recipe = QGroupBox("Enter a song in abc notation or xylofonyx format (set the mode appropriately!)")
         groupbox_main_recipe.setLayout(layout_main_song_section)
         self.layout1.addWidget(groupbox_main_recipe)
 
@@ -321,6 +330,7 @@ class MainWindow(QMainWindow):
         self.program_config['data']['zero_note'] = self.tok['zero_note'].text()
         self.program_config['data']['time_between_notes'] = self.tok['time_between_notes'].text()          
         self.program_config['data']['song'] = self.tok['song'].toPlainText()
+        self.program_config['data']['invert_melody'] = self.tok['invert_melody'].isChecked()
 
     def update_program_display(self):
         self.tok['note'].setText(self.program_config['data']['note'])
@@ -330,6 +340,8 @@ class MainWindow(QMainWindow):
         self.tok['zero_note'].setText(self.program_config['data']['zero_note'])
         self.tok['time_between_notes'].setText(self.program_config['data']['time_between_notes'])
         self.tok['song'].setPlainText(self.program_config['data']['song'])
+        self.tok['invert_melody'].setChecked(self.program_config['data']['invert_melody'])
+
 
     def save_button_handler(self):
         print('Save button clicked.')
