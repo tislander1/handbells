@@ -149,6 +149,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
 
         self.setWindowTitle("XyloFonyX Music Studio ver. 0.1")
+        self.setStyleSheet("color: black; selection-color: yellow; background-color: rgba(200, 200, 255, 255);") 
 
         self.tok = {}
         self.program_config = {
@@ -166,13 +167,15 @@ class MainWindow(QMainWindow):
         note_sample_text = QLabel(" Note sample (.wav or .mp3): ")
         layout_finder.addWidget(note_sample_text)
         self.tok['note'] = QLineEdit('sound_test/66218__percussionfiend__2.wav')
+        self.tok['note'].setStyleSheet("background-color:rgba(200,230,200,255)")
         text1 = QLabel(" Mode: ")
         self.tok['mode'] = QComboBox()
+        self.tok['mode'].setStyleSheet("background-color:rgba(200,230,200,255)")
         self.tok['mode'].addItems(['ABC notation', 'XyloFonyX'])
         layout_finder.addWidget(self.tok['note'])
         layout_finder.addWidget(text1)
         layout_finder.addWidget(self.tok['mode'])
-        groupbox1 = QGroupBox("Recipe Finder")
+        groupbox1 = QGroupBox("Instrument selection")
         groupbox1.setLayout(layout_finder)
         self.layout1.addWidget(groupbox1)
 
@@ -181,12 +184,16 @@ class MainWindow(QMainWindow):
 
         text_pub1 = QLabel(" Half steps per octave (default 12):")
         self.tok['half_steps_per_octave'] = QLineEdit("12")
+        self.tok['half_steps_per_octave'].setStyleSheet("background-color:rgba(200,230,200,255)")
         text_trim = QLabel(" Note trim (0 to 1):")
         self.tok['trim'] = QLineEdit("1.0")
+        self.tok['trim'].setStyleSheet("background-color:rgba(200,230,200,255)")
         frequency_shift_number = QLabel(" Frequency shift (half steps):")
-        self.tok['zero_note'] = QLineEdit("-10")  
+        self.tok['zero_note'] = QLineEdit("-10")
+        self.tok['zero_note'].setStyleSheet("background-color:rgba(200,230,200,255)")  
         time_btw_notes_label = QLabel(" Time between notes (sec):")
         self.tok['time_between_notes'] = QLineEdit("0.25")
+        self.tok['time_between_notes'].setStyleSheet("background-color:rgba(200,230,200,255)")  
 
         layout_pub.addWidget(text_pub1)
         layout_pub.addWidget(self.tok['half_steps_per_octave'])
@@ -207,15 +214,17 @@ class MainWindow(QMainWindow):
 
         layout_song = QVBoxLayout()
         self.tok['song'] = QPlainTextEdit('')
+        self.tok['song'].setStyleSheet("background-color:rgba(200,200,200,255)")  
         layout_song.addWidget(self.tok['song'])
         
         song_generator_button = QPushButton("Generate a song!")
+        song_generator_button.setStyleSheet("background-color:red;")
         song_generator_button.clicked.connect(self.generate_song)
         layout_song.addWidget(song_generator_button)
 
         layout_main_song_section.addLayout(layout_song)
 
-        groupbox_main_recipe = QGroupBox("Enter a song in ABC notation or Xylofonyx format")
+        groupbox_main_recipe = QGroupBox("Enter a song in abc notation or xylofonyx format")
         groupbox_main_recipe.setLayout(layout_main_song_section)
         self.layout1.addWidget(groupbox_main_recipe)
 
@@ -223,6 +232,7 @@ class MainWindow(QMainWindow):
         layout_saver = QHBoxLayout() # saver tool
         text_dB_file = QLabel(" File:")
         self.tok['json_file'] = QLineEdit("my song file.json")
+        self.tok['json_file'].setStyleSheet("background-color:rgba(200,230,200,255)")
         save_button = QPushButton("Save")
         save_button.clicked.connect(self.save_button_handler)
         spacer = QLabel('      ')
@@ -231,9 +241,7 @@ class MainWindow(QMainWindow):
         layout_saver.addWidget(text_dB_file)
         layout_saver.addWidget(self.tok['json_file'])
         layout_saver.addWidget(save_button)
-        layout_saver.addWidget(spacer)
         layout_saver.addWidget(load_button)
-        layout_saver.addWidget(spacer)
         self.layout1.addLayout( layout_saver )
 
         status_panel = QHBoxLayout()
