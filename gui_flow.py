@@ -100,7 +100,7 @@ def add_new_note(song, note, sample_idx):
         padded_note = np.concat( (np.zeros(start_of_note), note, np.zeros(len(song) - end_of_note)))
         return padded_note + song
 
-def make_song_from_array(note, song_array, samples_between_notes, zero_note, sample_rate, bins_per_octave):
+def make_song_from_array(note, song_array, samples_between_notes, zero_note, sample_rate, bins_per_octave, invert):
     #song_array = [[0, 12, 400, 400, 7, 7]] # rest for undefined notes
     notes = {}
     sound_signal = note[0:0]
@@ -110,13 +110,13 @@ def make_song_from_array(note, song_array, samples_between_notes, zero_note, sam
             this_note_obj = score[note_idx]
 
             if isinstance(this_note_obj, int):  # simple note
-                note_value = this_note_obj + zero_note
+                note_value = this_note_obj*invert + zero_note
                 if note_value not in notes:
                     notes[note_value] = librosa.effects.pitch_shift(y=note, sr=sample_rate, bins_per_octave=bins_per_octave, n_steps=note_value, scale=True)
                 sound_signal = add_new_note(sound_signal, notes[note_value], sample_idx)
                 sample_idx = sample_idx + int(samples_between_notes)
             elif isinstance(this_note_obj, list) and isinstance(this_note_obj[0], int):   #note that may be of a different length than a simple note
-                note_value = this_note_obj[0] + zero_note
+                note_value = this_note_obj[0]*invert + zero_note
                 if note_value not in notes:
                     notes[note_value] = librosa.effects.pitch_shift(y=note, sr=sample_rate, bins_per_octave=bins_per_octave, n_steps=note_value, scale=True)
                 sound_signal = add_new_note(sound_signal, notes[note_value], sample_idx)
@@ -125,7 +125,7 @@ def make_song_from_array(note, song_array, samples_between_notes, zero_note, sam
                 sound_signal = add_new_note(sound_signal, 0*notes[0], sample_idx)
                 sample_idx = sample_idx + int(samples_between_notes * this_note_obj[1])
             elif isinstance(this_note_obj, list) and isinstance(this_note_obj[0], tuple):
-                note_values = [n[0] + zero_note for n in this_note_obj]
+                note_values = [n[0]*invert + zero_note for n in this_note_obj]
                 note_time_values = [t[1] for t in this_note_obj]
                 delay_values = [d[2] for d in this_note_obj]
                 max_note_length = int(max([note_time_values[i] + delay_values[i] for i in range(len(note_time_values))]) * samples_between_notes)
@@ -291,9 +291,13 @@ class MainWindow(QMainWindow):
             zero_note = float(self.tok['zero_note'].text())
             time_between_notes = float(self.tok['time_between_notes'].text())  # you can choose the shortest note (e.g. an eighth note)
                                                     # to avoid fractions in the song array, though it's not required
+
+            invert_melody_checked = self.tok['invert_melody'].isChecked()
             song_array_str = self.tok['song'].toPlainText()
 
             output_sound_file = 'output.wav'
+
+            invert_melody_multiplier = -1 if invert_melody_checked else 1
 
             if mode == 'XyloFonyX':
                 song_array = eval(song_array_str)
@@ -310,7 +314,8 @@ class MainWindow(QMainWindow):
 
             sound_signal = make_song_from_array(note=note, song_array=song_array,
                                                 samples_between_notes=samples_between_notes, zero_note=zero_note,
-                                                sample_rate=sample_rate, bins_per_octave=bins_per_octave)
+                                                sample_rate=sample_rate, bins_per_octave=bins_per_octave,
+                                                invert=invert_melody_multiplier)
 
             soundfile.write(output_sound_file, sound_signal, sample_rate)
             self.tok['status'].insertPlainText('\nResults written to ' + output_sound_file + '.')
