@@ -4,7 +4,7 @@ import json
 import time
 import webbrowser
 from PySide6.QtGui import QTextCursor, QFont, QAction
-from PySide6.QtWidgets import QPushButton, QLineEdit, QLabel, QComboBox, QPlainTextEdit, QCheckBox
+from PySide6.QtWidgets import QPushButton, QLineEdit, QLabel, QComboBox, QPlainTextEdit, QCheckBox, QFileDialog
 from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QMainWindow, QGroupBox
 
 import librosa
@@ -156,7 +156,9 @@ class MainWindow(QMainWindow):
         helpMenu = menuBar.addMenu('&Help')
 
         openAction = QAction('&Load', self)
+        openAction.triggered.connect(self.load_button_handler)
         saveAction = QAction('&Save', self)
+        saveAction.triggered.connect(self.save_button_handler)
         helpAction = QAction('&Help manual', self)    
         helpAction.triggered.connect(self.open_help_menu)
  
@@ -166,7 +168,6 @@ class MainWindow(QMainWindow):
         helpMenu.addAction(helpAction)
 
         
-
 
         self.tok = {}
         self.program_config = {
@@ -372,7 +373,8 @@ class MainWindow(QMainWindow):
         print('Save button clicked.')
         self.tok['status'].moveCursor(QTextCursor.End)
         self.update_program_record()
-        file_name = self.tok['json_file'].text()
+        file_name = QFileDialog.getSaveFileName(self, 'Save File', filter="XyloFonyX JSON (*.json);;")[0]
+        # file_name = self.tok['json_file'].text()
         with open(file_name, 'w') as f:
             json.dump(self.program_config, f)
         self.tok['status'].insertPlainText('Program data saved to ' + str(file_name) +'\n')
@@ -381,6 +383,7 @@ class MainWindow(QMainWindow):
         print('Load button clicked.')
         self.tok['status'].moveCursor(QTextCursor.End)
         file_name = self.tok['json_file'].text()
+        file_name = QFileDialog.getOpenFileName(self, 'Load File', filter="XyloFonyX JSON (*.json);;")[0]
         with open(file_name, 'r') as f:
             self.program_config = json.load(f)
         autobackup_file = file_name + '_' + time.strftime("%Y%m%d_%H%M%S") +'.json'
