@@ -3,7 +3,7 @@ import sys
 import json
 import time
 import webbrowser
-from PySide6.QtGui import QTextCursor, QFont
+from PySide6.QtGui import QTextCursor, QFont, QAction
 from PySide6.QtWidgets import QPushButton, QLineEdit, QLabel, QComboBox, QPlainTextEdit, QCheckBox
 from PySide6.QtWidgets import QApplication, QWidget, QHBoxLayout, QVBoxLayout, QMainWindow, QGroupBox
 
@@ -149,7 +149,24 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
 
         self.setWindowTitle("XyloFonyX Music Studio ver. 0.1")
-        self.setStyleSheet("color: black; selection-color: yellow; background-color: rgba(200, 200, 255, 255);") 
+        self.setStyleSheet("color: black; selection-color: blue; background-color: rgba(200, 200, 255, 255);") 
+
+        menuBar = self.menuBar()
+        fileMenu = menuBar.addMenu('&File')
+        helpMenu = menuBar.addMenu('&Help')
+
+        openAction = QAction('&Load', self)
+        saveAction = QAction('&Save', self)
+        helpAction = QAction('&Help manual', self)    
+        helpAction.triggered.connect(self.open_help_menu)
+ 
+
+        fileMenu.addAction(openAction)
+        fileMenu.addAction(saveAction)
+        helpMenu.addAction(helpAction)
+
+        
+
 
         self.tok = {}
         self.program_config = {
@@ -176,7 +193,7 @@ class MainWindow(QMainWindow):
         layout_finder.addWidget(self.tok['note'])
         layout_finder.addWidget(text1)
         layout_finder.addWidget(self.tok['mode'])
-        groupbox1 = QGroupBox("Instrument selection")
+        groupbox1 = QGroupBox("Instrument and mode selection")
         groupbox1.setLayout(layout_finder)
         self.layout1.addWidget(groupbox1)
 
@@ -277,6 +294,9 @@ class MainWindow(QMainWindow):
         self.program_config['data']['zero_note'] = self.tok['zero_note'].text()
         self.program_config['data']['time_between_notes'] = self.tok['time_between_notes'].text()          
         self.program_config['data']['song'] = self.tok['song'].toPlainText()
+    
+    def open_help_menu(self):
+        webbrowser.open('file://' + os.path.realpath('help.html'))
 
     def generate_song(self):
         try:
