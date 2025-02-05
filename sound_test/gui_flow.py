@@ -12,7 +12,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        self.setWindowTitle("Xylofonyx ver. 0.1")
+        self.setWindowTitle("XyloFonyX Music Studio ver. 0.1")
 
         self.tok = {}
         self.program_config = {
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         self.tok['note'] = QLineEdit('sound_test/66218__percussionfiend__2.wav')
         text1 = QLabel(" Mode: ")
         self.tok['mode'] = QComboBox()
-        self.tok['mode'].addItems(['ABC notation', 'Xylofonix'])
+        self.tok['mode'].addItems(['ABC notation', 'XyloFonyX'])
         layout_finder.addWidget(self.tok['note'])
         layout_finder.addWidget(text1)
         layout_finder.addWidget(self.tok['mode'])
