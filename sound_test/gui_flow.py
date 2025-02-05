@@ -16,10 +16,8 @@ class MainWindow(QMainWindow):
 
         self.tok = {}
         self.program_config = {
-             'data': [{'note': '', 'mode': '', 'half_steps_per_octave': '', 'trim': '', 'zero_note': '', 'song': ''}]
+             'data': {'note': '', 'mode': '', 'half_steps_per_octave': '', 'trim': '', 'zero_note': '', 'song': ''}
              }
-        self.program_pointer = 0
-        self.previous_program_pointer = 0
 
         print('Loading window.')
 
@@ -47,27 +45,21 @@ class MainWindow(QMainWindow):
 
         text_pub1 = QLabel(" Half steps per octave (default 12):")
         self.tok['half_steps_per_octave'] = QLineEdit("12")
-
         text_trim = QLabel(" Note trim (0 to 1):")
         self.tok['trim'] = QLineEdit("1.0")
-
         frequency_shift_number = QLabel(" Frequency shift (half steps):")
         self.tok['zero_note'] = QLineEdit("-10")  
-
         time_btw_notes_label = QLabel(" Time between notes (sec):")
         self.tok['time_between_notes'] = QLineEdit("0.25")
 
         layout_pub.addWidget(text_pub1)
         layout_pub.addWidget(self.tok['half_steps_per_octave'])
-
         layout_pub.addWidget(text_trim)
         layout_pub.addWidget(self.tok['trim'])
-
-        layout_pub.addWidget(time_btw_notes_label)
-        layout_pub.addWidget(self.tok['time_between_notes'])        
-        
         layout_pub.addWidget(frequency_shift_number)
         layout_pub.addWidget(self.tok['zero_note'])
+        layout_pub.addWidget(time_btw_notes_label)
+        layout_pub.addWidget(self.tok['time_between_notes'])        
 
         groupbox_pub = QGroupBox("Configuration")
         groupbox_pub.setLayout(layout_pub)
@@ -86,7 +78,6 @@ class MainWindow(QMainWindow):
         layout_song.addWidget(song_generator_button)
 
         layout_main_song_section.addLayout(layout_song)
-
 
         groupbox_main_recipe = QGroupBox("Enter a song in ABC notation or Xylofonyx format")
         groupbox_main_recipe.setLayout(layout_main_song_section)
@@ -148,7 +139,7 @@ class MainWindow(QMainWindow):
         file_name = self.tok['json_file'].text()
         with open(file_name, 'w') as f:
             json.dump(self.program_config, f)
-        self.tok['status'].insertPlainText('Recipes saved to ' + str(file_name) +'\n')
+        self.tok['status'].insertPlainText('Program data saved to ' + str(file_name) +'\n')
             
     def load_button_handler(self):
         print('Load button clicked.')
@@ -159,10 +150,8 @@ class MainWindow(QMainWindow):
         autobackup_file = file_name + '_' + time.strftime("%Y%m%d_%H%M%S") +'.json'
         with open(autobackup_file, 'w') as f:
             json.dump(self.program_config, f)
-        self.tok['status'].insertPlainText('Recipes read from ' + str(file_name) + '\n')
-        self.previous_program_pointer = len(self.program_config['data']) - 1
-        self.program_pointer = self.previous_program_pointer
-        self.update_program_display(self.program_pointer)
+        self.tok['status'].insertPlainText('Program data read from ' + str(file_name) + '\n')
+        self.update_program_display()
 
 
 app = QApplication(sys.argv)
