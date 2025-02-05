@@ -221,10 +221,10 @@ class MainWindow(QMainWindow):
         layout_saver = QHBoxLayout() # saver tool
         text_dB_file = QLabel(" File:")
         self.tok['json_file'] = QLineEdit("my song file.json")
-        save_button = QPushButton("Save Recipes")
+        save_button = QPushButton("Save")
         save_button.clicked.connect(self.save_button_handler)
         spacer = QLabel('      ')
-        load_button = QPushButton("Load Recipes")
+        load_button = QPushButton("Load")
         load_button.clicked.connect(self.load_button_handler)
         layout_saver.addWidget(text_dB_file)
         layout_saver.addWidget(self.tok['json_file'])
@@ -257,6 +257,9 @@ class MainWindow(QMainWindow):
         self.program_config['data']['song'] = self.tok['song'].toPlainText()
 
     def generate_song(self):
+
+        self.tok['status'].insertPlainText('\nBeginning song generation.')
+
         input_sound_file = self.tok['note'].text()
         mode = self.tok['mode'].currentText()
         bins_per_octave = int(self.tok['half_steps_per_octave'].text())
@@ -286,8 +289,8 @@ class MainWindow(QMainWindow):
                                             sample_rate=sample_rate, bins_per_octave=bins_per_octave)
 
         soundfile.write(output_sound_file, sound_signal, sample_rate)
-        self.tok['status'].insertPlainText('Results written to ' + output_sound_file +'.\n')
-        self.tok['status'].insertPlainText('Done! Current time is ' + str(datetime.now())+'.')
+        self.tok['status'].insertPlainText('\nResults written to ' + output_sound_file + '.')
+        self.tok['status'].insertPlainText('\nDone! Current time is ' + str(datetime.now()) + '.')
 
 
     def update_program_record(self):
