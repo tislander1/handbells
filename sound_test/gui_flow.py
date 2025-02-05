@@ -15,11 +15,11 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Xylofonyx ver. 0.1")
 
         self.tok = {}
-        self.all_recipes = {
-             'data': [{'name': '', 'ingredients': '', 'instructions': ''}]
+        self.program_config = {
+             'data': [{'note': '', 'mode': '', 'half_steps_per_octave': '', 'trim': '', 'zero_note': '', 'song': ''}]
              }
-        self.current_recipe = 0
-        self.last_recipe = 0
+        self.program_pointer = 0
+        self.previous_program_pointer = 0
 
         print('Loading window.')
 
@@ -73,17 +73,23 @@ class MainWindow(QMainWindow):
         groupbox_pub.setLayout(layout_pub)
         self.layout1.addWidget(groupbox_pub)
 
-        layout_main_recipe = QVBoxLayout() #main layout for window
+        layout_main_song_section = QVBoxLayout() #main layout for window
 
         #Main recipe --------------------------------------------------------------------------
 
-        layout_song = QHBoxLayout()
+        layout_song = QVBoxLayout()
         self.tok['song'] = QPlainTextEdit('')
         layout_song.addWidget(self.tok['song'])
-        layout_main_recipe.addLayout(layout_song)
+        
+        song_generator_button = QPushButton("Generate a song!")
+        song_generator_button.clicked.connect(self.generate_song)
+        layout_song.addWidget(song_generator_button)
+
+        layout_main_song_section.addLayout(layout_song)
+
 
         groupbox_main_recipe = QGroupBox("Enter a song in ABC notation or Xylofonyx format")
-        groupbox_main_recipe.setLayout(layout_main_recipe)
+        groupbox_main_recipe.setLayout(layout_main_song_section)
         self.layout1.addWidget(groupbox_main_recipe)
 
         #Save and load the recipe --------------------------------------------------------------------------
@@ -117,32 +123,31 @@ class MainWindow(QMainWindow):
         widget.setLayout(self.layout1)
         self.setCentralWidget(widget)
 
+    def generate_song(self):
+        pass
 
-    def update_recipe_record(self, recipe_number):
-        self.all_recipes['data'][recipe_number]['name'] = self.tok['recipe_name'].text()
-        self.all_recipes['data'][recipe_number]['ingredients'] = self.tok['ingredients'].toPlainText()
-        self.all_recipes['data'][recipe_number]['instructions'] = self.tok['instructions'].toPlainText()
-        self.all_recipes['data'][recipe_number]['cooking'] = self.tok['cooking'].toPlainText()
-        self.all_recipes['data'][recipe_number]['notes'] = self.tok['notes'].toPlainText()
-        self.all_recipes['data'][recipe_number]['meal'] = self.tok['meal'].text()
+    def update_program_record(self):
+        self.program_config['data']['note'] = self.tok['note'].text()
+        self.program_config['data']['mode'] = self.tok['mode'].text()
+        self.program_config['data']['half_steps_per_octave'] = self.tok['half_steps_per_octave'].text()
+        self.program_config['data']['trim'] = self.tok['trim'].text() 
+        self.program_config['data']['zero_note'] = self.tok['zero_note'].text()           
+        self.program_config['data']['song'] = self.tok['song'].toPlainText()
 
-    
-    def update_recipe_display(self, recipe_number):
-        self.tok['recipe_name'].setText(self.all_recipes['data'][recipe_number]['name'])
-        self.tok['ingredients'].setPlainText(self.all_recipes['data'][recipe_number]['ingredients'])
-        self.tok['instructions'].setPlainText(self.all_recipes['data'][recipe_number]['instructions'])
-        self.tok['cooking'].setPlainText(self.all_recipes['data'][recipe_number]['cooking'])
-        self.tok['meal'].setText(self.all_recipes['data'][recipe_number]['meal'])
-        self.tok['notes'].setPlainText(self.all_recipes['data'][recipe_number]['notes'])
-
-        self.tok['recipe_number'].setText( str(recipe_number) + '/' + str(self.last_recipe))
+    def update_program_display(self):
+        self.tok['note'].setText(self.program_config['data']['note'])
+        self.tok['mode'].setText(self.program_config['data']['mode'])
+        self.tok['half_steps_per_octave'].setText(self.program_config['data']['half_steps_per_octave'])
+        self.tok['trim'].setText(self.program_config['data']['trim'])
+        self.tok['zero_note'].setText(self.program_config['data']['zero_note'])
+        self.tok['song'].setPlainText(self.program_config['data']['song'])
 
     def save_button_handler(self):
         print('Save button clicked.')
         self.tok['status'].moveCursor(QTextCursor.End)
         file_name = self.tok['json_file'].text()
         with open(file_name, 'w') as f:
-            json.dump(self.all_recipes, f)
+            json.dump(self.program_config, f)
         self.tok['status'].insertPlainText('Recipes saved to ' + str(file_name) +'\n')
             
     def load_button_handler(self):
@@ -150,14 +155,14 @@ class MainWindow(QMainWindow):
         self.tok['status'].moveCursor(QTextCursor.End)
         file_name = self.tok['json_file'].text()
         with open(file_name, 'r') as f:
-            self.all_recipes = json.load(f)
+            self.program_config = json.load(f)
         autobackup_file = file_name + '_' + time.strftime("%Y%m%d_%H%M%S") +'.json'
         with open(autobackup_file, 'w') as f:
-            json.dump(self.all_recipes, f)
+            json.dump(self.program_config, f)
         self.tok['status'].insertPlainText('Recipes read from ' + str(file_name) + '\n')
-        self.last_recipe = len(self.all_recipes['data']) - 1
-        self.current_recipe = self.last_recipe
-        self.update_recipe_display(self.current_recipe)
+        self.previous_program_pointer = len(self.program_config['data']) - 1
+        self.program_pointer = self.previous_program_pointer
+        self.update_program_display(self.program_pointer)
 
 
 app = QApplication(sys.argv)
