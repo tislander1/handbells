@@ -2,6 +2,8 @@ import os
 import sys
 import json
 import time
+import random
+import math
 import webbrowser
 from PySide6.QtGui import QTextCursor, QFont, QAction
 from PySide6.QtWidgets import QPushButton, QLineEdit, QLabel, QComboBox, QPlainTextEdit, QCheckBox, QFileDialog
