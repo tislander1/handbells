@@ -1,1 +1,74 @@
-Web browser test page
+<!DOCTYPE html>
+<html>
+<title>Help for XyloFonyX</title>
+<body>
+
+<table border="1">
+    <tr>
+        <td>Note sample</td><td>Enter a single clip of a percussion instrument in .mp3 or .wav format (and maybe others, system dependent)</td>
+    </tr>
+    <tr>
+        <td>Mode</td><td>Enter "XyloFonyX" to use the native song data entry, or "ABC notation" to use the standard ABC format.</td>
+    </tr>
+    <tr>
+        <td>Half-steps per octave (default 12)</td><td>Western music typically uses twelve notes (called half-steps) per octave, which means that there are twelve discrete notes required on a piano each time the note frequency doubles.  Other musical traditions use different numbers of notes.</td>
+    </tr>
+    <tr>
+        <td>Note trim</td><td>The fraction of a note to keep.  Use 1.0 to keep the whole note, or 0.8 to keep the first 80% and cut off the last 20%.</td>
+    </tr>
+    <tr>
+        <td>Frequency shift</td><td>Enter a positive number of half-steps to tone-shift the melody higher, or a negative number to shift it lower.  If a zero is entered, then in the XyloFonyX format the WAV/MP3 note supplied will be note 0.</td>
+    </tr>
+    <tr>
+        <td>Time between notes</td><td>This value (in seconds) controls the tempo of the melody.  In ABC format, this is the length of the note specified by the L: field.  In the XyloFonyX format, all note lengths are relative to this value.</td>
+    </tr>
+    <tr>
+        <td>Invert melody</td><td>Check this box to vertically invert a melody -- every time the note value of the original melody increased, it will decrease now by the same amount.</td>
+    </tr>
+
+</table>
+
+
+<h2>
+    XyloFonyX format
+</h2>
+
+<pre>
+    [
+    [[(0,1,0),(4,1,0),(7,1,0)], [5,2], 5, 7, 9, 5,  #Tis a gift to be simple,
+        9, 10, [12,2], 12, 10, [9,2],  # Tis a gift to be free.
+        7, 5, [7,2], [7,2], [7,2], [5,2], 7, 9, 7, 4, [0,2], # Tis a gift to come down where we ought to be,
+        [0,2], 5, 4, 5, 7, [9,2], 7, 7, [9,2], [10,2], [12,2], # and when we find ourselves in the place just right,
+        [9,2], [7,2], 7, 7, 9, [9,2], 7, [5,2], 5, 5, [5,4], # t'will be in the valley of love and delight.
+        [12,4], [9,3], 7, 9, 10, 9, 7, [5,3], # When true simplicity is gained,
+        7, [9,2], 9, 10, [12,2], [9,2], [7,2], 7, 9, [7,2], #to bow and to bend we shan't be ashamed.
+        [0,2], [5,4], [5,3], 7, [9,2], 9, 10, [12,2], # To turn, turn, will be our delight,
+        10, 9, [7,2], [7,2], [9,2], 9, 7, [5,2], [5,2], [5,4]], # till by turning, turning we come out right.
+        []
+        ]
+    </pre>
+
+
+<h2>
+    ABC notation
+</h2>
+
+<pre>
+X:1
+%
+T:Face Me Up
+M:C|
+L:1/8
+R:Hornpipe
+S:Kerr - Merry Melodies, vol. 4, No. 306
+Z:AK/Fiddler's Companion
+K:F
+c2f2d2f2 | (cd)cB AG F2 | ABcd efga |1 (g^f)ga g4 :|2 (gf)ga f4 ||
+|: bagb agfa | gfeg f2a2 | g^fga g=fed | (c=B)cd (c_B)AB |
+c2f2d2f2 | (cd)cB AB c2 | defd efge | f2a2f2z5 :||
+</pre>
+
+
+
+</body>
+</html> 
