@@ -290,6 +290,10 @@ class MainWindow(QMainWindow):
             input_sound_file = self.tok['note'].text()
             mode = self.tok['mode'].currentText()
             bins_per_octave = int(self.tok['half_steps_per_octave'].text())
+            
+            if mode == 'ABC notation':
+                bins_per_octave = 12    #ABC only supports 12 bins per octave
+
             note_trim_fraction = float(self.tok['trim'].text())    # can trim off end of note if desired (just make this less than 1.0)
             zero_note = float(self.tok['zero_note'].text())
             time_between_notes = float(self.tok['time_between_notes'].text())  # you can choose the shortest note (e.g. an eighth note)

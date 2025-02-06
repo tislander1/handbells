@@ -2,6 +2,16 @@
 <html>
 <title>Help for XyloFonyX</title>
 <body>
+    
+<h2>
+    About this program:
+</h2>
+
+XyloFonyX is a program that lets a person generate a full song from a single sound clip of a music note.  A person can enter either standard ABC notation (for classic/folk music), or a purpose-built format.  The latter native XyloFonyX format is based on numbers instead of letters, which can help with generating music programmatically.  It can also support chords where some notes are delayed, and can support non-Western scales as well.
+
+<h2>
+    Properties configuration:
+</h2>
 
 <table border="1">
     <tr>
@@ -30,7 +40,27 @@
 
 
 <h2>
-    XyloFonyX format
+    XyloFonyX format:
+</h2>
+
+The XyloFonyX format is the native method of note entry.  Notes can be entered in three ways:
+<ul>
+    <li>
+        Enter a value like <font color="green">5</font> to indicate a simple note of default note length, and a pitch 5 half-steps above the zero point.
+    </li>
+    <li>
+        Enter a value like <font color="green">[5,2]</font> to indicate a simple note of length 2x the default note length, and a pitch 5 half-steps above the zero point.
+    </li>
+    <li>
+        Enter a value like <font color="green">[(0,1,0),(4,2,0),(7,1,0.5)]</font> to indicate a chord.  The first note is 0 half-steps above the zero point, lasts 1x the default note length, and has zero delay.  The second note is 4 half-steps above the zero point, lasts 2x the default length, and has zero delay.  The last note is 7 half-steps above the zero point, lasts 1x the default length, and the beginning is delayed by 0.5x the default note length.
+    </li>
+    <li>
+        Multiple simultaneous melodies can be played; each melody is enclosed by square braces.  the final <font color="green">[]</font> could be used to enclose a second melody but is empty here.
+    </li>
+</ul>
+
+<h2>
+    XyloFonyX example song:
 </h2>
 
 <pre>
@@ -51,6 +81,12 @@
 
 <h2>
     ABC notation
+</h2>
+
+Please visit <a href="https://abcnotation.com/">abcnotation.com</a> or <a href="http://www.lesession.co.uk/abc/abc_notation.htm">http://www.lesession.co.uk/abc/abc_notation.htm</a> for more information about this standard computer music notation.  The first link contains many songs, while the second is a tutorial about how to write ABC music notation.
+
+<h2>
+    ABC example song:
 </h2>
 
 <pre>
