@@ -1,2 +1,3 @@
-# handbells
-Handbells
+# XyloFonyX
+
+XyloFonyX is a program that lets a person generate a full song from a single sound clip of a music note.  A person can enter either standard ABC notation (for classic/folk music), or a purpose-built format.  The latter native XyloFonyX format is based on numbers instead of letters, which can help with generating music programmatically.  It can also support chords where some notes are delayed, and can support non-Western scales as well.
