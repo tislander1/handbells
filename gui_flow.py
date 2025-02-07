@@ -124,10 +124,12 @@ def make_song_from_array(note, song_array, samples_between_notes, zero_note, sam
                 sound_signal = add_new_note(sound_signal, notes[note_value], sample_idx)
                 sample_idx = sample_idx + int(samples_between_notes * this_note_obj[1])
             elif isinstance(this_note_obj, list) and isinstance(this_note_obj[0], str): #rests 
-                sound_signal = add_new_note(sound_signal, 0*notes[0], sample_idx)
+                key1 =list(notes.keys())[0]
+                sound_signal = add_new_note(sound_signal, 0*notes[key1], sample_idx)
                 sample_idx = sample_idx + int(samples_between_notes * this_note_obj[1])
             elif isinstance(this_note_obj, list) and isinstance(this_note_obj[0], tuple):
-                note_values = [n[0]*invert + zero_note for n in this_note_obj]
+                key1 =list(notes.keys())[0]
+                note_values = [n[key1]*invert + zero_note for n in this_note_obj]
                 note_time_values = [t[1] for t in this_note_obj]
                 delay_values = [d[2] for d in this_note_obj]
                 max_note_length = int(max([note_time_values[i] + delay_values[i] for i in range(len(note_time_values))]) * samples_between_notes)
@@ -312,6 +314,8 @@ class MainWindow(QMainWindow):
                 song_array = eval(song_array_str)
             elif mode == 'ABC notation':
                 song_array = abc_to_song_array(song_array_str)
+                with open('xylofonyx_notation.txt', 'w+') as f:
+                    f.write(str(song_array))
 
             note, sample_rate = librosa.load(input_sound_file)
 
